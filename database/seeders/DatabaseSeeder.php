@@ -2,24 +2,19 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
     /**
-     * Seed the application's database.
+     * 執行主要資料庫種子
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        $this->call([
+            LanguageSeeder::class, // 先有語言 (id 1, 2, 3)
+            CategorySeeder::class, // 再有分類 (綜合, 日常, hiso, kuro)
+            ImageSeeder::class,    // 最後產生圖片、路徑、下載檔與留言
         ]);
     }
 }

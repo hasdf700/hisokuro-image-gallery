@@ -21,7 +21,7 @@
                 <li class="nav-item dropdown me-3">
                     <a class="nav-link dropdown-toggle text-secondary" href="#" role="button"
                         data-bs-toggle="dropdown">
-                        🌐 繁體中文
+                        <i class="fa-solid fa-globe me-1"></i>繁體中文
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm">
                         <li><a class="dropdown-item" href="#">繁體中文</a></li>

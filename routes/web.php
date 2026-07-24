@@ -3,9 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ImageController;
 
-Route::get('/', function () {
-    return view('home');
-});
 //首頁路由
 Route::get('/', [ImageController::class, 'index'])->name('home');
 

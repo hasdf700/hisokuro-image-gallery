@@ -10,26 +10,59 @@ use Illuminate\Support\Facades\Session;
 class ImageController extends Controller
 {
     /**
-     * 顯示首頁圖片列表
+     * 顯示首頁：列出所有書的封面
      */
     public function index(Request $request)
     {
-        // 1. 取得所有分類供前端篩選選單使用
-        $categories = Category::orderBy('sort_order', 'asc')->get();
+        $currentLocale = app()->getLocale();
 
-        // 2. 建立圖片查詢，並預載入關聯資料（category, paths）以優化效能
-        $query = Image::with(['category', 'paths.language', 'comments']);
+        // 1. 查詢所有分類（現在等於「所有書」），每本書預先載入：
+        //    - images：只抓 sort_order 最小的那一張當封面，且該張要連同它的語言路徑一起載入
+        $query = Category::with([
+            'images' => function ($query) use ($currentLocale) {
+                $query->orderBy('sort_order', 'asc')
+                    ->limit(1)
+                    ->with(['paths' => function ($query) use ($currentLocale) {
+                        $query->whereHas('language', function ($query) use ($currentLocale) {
+                            $query->where('name', $currentLocale);
+                        });
+                    }]);
+            },
+            'comments' => function ($query) {
+                $query->latest()->limit(3); // 首頁只先顯示最新 3 則，避免卡片太長
+            },
+        ]);
 
-        // 如果前端有傳入 category_id 篩選，則進行過濾
-        if ($request->has('category_id') && $request->category_id != '') {
-            $query->where('category_id', $request->category_id);
-        }
+        $categories = $query->orderBy('sort_order', 'asc')->get();
 
-        // 3. 取得圖片清單（最新上架排前面）
-        $images = $query->latest()->get();
+        // 2. 回傳 Blade 視圖
+        return view('home', compact('categories'));
+    }
 
-        // 4. 回傳 Blade 視圖並傳送資料
-        return view('home', compact('images', 'categories'));
+    /**
+     * 顯示某本書的所有內頁
+     */
+    public function show(Request $request, Category $category)
+    {
+        $currentLocale = app()->getLocale();
+
+        // 載入這本書底下所有頁面（images），依 sort_order 排序，
+        // 每頁只帶出符合目前語言的那一筆路徑
+        $category->load([
+            'images' => function ($query) use ($currentLocale) {
+                $query->orderBy('sort_order', 'asc')
+                    ->with(['paths' => function ($query) use ($currentLocale) {
+                        $query->whereHas('language', function ($query) use ($currentLocale) {
+                            $query->where('name', $currentLocale);
+                        });
+                    }]);
+            },
+            'comments' => function ($query) {
+                $query->latest();
+            },
+        ]);
+
+        return view('book', compact('category'));
     }
 
     /**
@@ -37,12 +70,10 @@ class ImageController extends Controller
      */
     public function switchLanguage($locale)
     {
-        // 驗證傳入的語系代碼是否合規
         if (in_array($locale, ['zh_TW', 'ja', 'ko'])) {
             Session::put('locale', $locale);
         }
 
-        // 重新導向回上一頁
         return redirect()->back();
     }
 }

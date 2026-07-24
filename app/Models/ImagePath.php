@@ -13,7 +13,7 @@ class ImagePath extends Model
 
     protected $table = 'images_path';
 
-    protected $fillable = ['image_id', 'language_id', 'filepath'];
+    protected $fillable = ['image_id', 'language_id', 'filepath', 'download_path'];
 
     /**
      * 此預覽路徑屬於某張圖片

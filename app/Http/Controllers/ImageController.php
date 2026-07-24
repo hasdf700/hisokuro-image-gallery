@@ -56,10 +56,7 @@ class ImageController extends Controller
                             $query->where('name', $currentLocale);
                         });
                     }]);
-            },
-            'comments' => function ($query) {
-                $query->latest();
-            },
+            }
         ]);
 
         return view('book', compact('category'));

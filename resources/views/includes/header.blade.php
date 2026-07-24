@@ -21,6 +21,13 @@
         ],
     ];
 
+    // 語言清單：key 是語系代碼，value 是顯示文字
+    $locales = [
+        'zh_TW' => '繁體中文',
+        'ja' => '日本語',
+        'ko' => '한국어',
+    ];
+
     // 取得當前全域語系，若不在定義範圍內則預設為 zh_TW
     $currentLocale = app()->getLocale();
 @endphp
@@ -39,8 +46,7 @@
             <ul class="navbar-nav ms-auto align-items-center">
                 @foreach ($navItems as $item)
                     <li class="nav-item">
-                        <a class="nav-link"
-                            href="#">
+                        <a class="nav-link" href="#">
                             <i class="fa-solid {{ $item['icon'] }} me-1"></i>
                             {{ $item['label'][$currentLocale] ?? $item['label']['zh_TW'] }}
                         </a>
@@ -52,38 +58,17 @@
                     <a class="nav-link dropdown-toggle text-secondary" href="#" role="button"
                         data-bs-toggle="dropdown">
                         <i class="fa-solid fa-globe me-1"></i>
-                        @switch(app()->getLocale())
-                            @case('ja')
-                                日本語
-                            @break
-
-                            @case('ko')
-                                한국어
-                            @break
-
-                            @default
-                                繁體中文
-                        @endswitch
+                        {{ $locales[$currentLocale] ?? '繁體中文' }}
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm">
-                        <li>
-                            <a class="dropdown-item {{ (session('locale') ?? app()->getLocale()) == 'zh_TW' ? 'active' : '' }}"
-                                href="{{ route('lang.switch', 'zh_TW') }}">
-                                繁體中文
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item {{ (session('locale') ?? app()->getLocale()) == 'ja' ? 'active' : '' }}"
-                                href="{{ route('lang.switch', 'ja') }}">
-                                日本語
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item {{ (session('locale') ?? app()->getLocale()) == 'ko' ? 'active' : '' }}"
-                                href="{{ route('lang.switch', 'ko') }}">
-                                한국어
-                            </a>
-                        </li>
+                        @foreach ($locales as $code => $label)
+                            <li>
+                                <a class="dropdown-item {{ $currentLocale == $code ? 'active' : '' }}"
+                                    href="{{ route('lang.switch', $code) }}">
+                                    {{ $label }}
+                                </a>
+                            </li>
+                        @endforeach
                     </ul>
                 </li>
 

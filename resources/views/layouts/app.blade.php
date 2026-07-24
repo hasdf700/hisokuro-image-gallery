@@ -8,6 +8,8 @@
 
     <!-- 1. 導入 Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 1. 導入 Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <!-- 2. 極簡風全局客製化 CSS -->
     <style>
@@ -72,10 +74,10 @@
     <!-- 全局頁尾 (Footer) -->
     @include('includes.footer')
 
-    <!-- 3. 導入 jQuery 與 Bootstrap 5 JS 與 Font Awesome 6 CDN -->
+    <!-- 3. 導入 jQuery 與 Bootstrap 5 JS -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
 
     @stack('scripts')
 </body>

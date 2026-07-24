@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Image;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class ImageController extends Controller
 {
@@ -29,5 +30,19 @@ class ImageController extends Controller
 
         // 4. 回傳 Blade 視圖並傳送資料
         return view('home', compact('images', 'categories'));
+    }
+
+    /**
+     * 切換全站語言設定
+     */
+    public function switchLanguage($locale)
+    {
+        // 驗證傳入的語系代碼是否合規
+        if (in_array($locale, ['zh_TW', 'ja', 'ko'])) {
+            Session::put('locale', $locale);
+        }
+
+        // 重新導向回上一頁
+        return redirect()->back();
     }
 }
